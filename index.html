@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#17232e" />
+    <meta
+      name="description"
+      content="An elemental playground. Shape clouds, move water, kindle fire, and carve a living landscape with your hands."
+    />
+    <title>Element Bender — A study in natural forces</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%2317232e'/%3E%3Cpath d='M15 40 32 12l17 28ZM21 49h22M10 32h44' stroke='%23edf0eb' stroke-width='2' fill='none'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <canvas
+        id="canvas"
+        aria-label="Interactive elemental world. Drag to bend. Use the action buttons to change your gesture."
+        tabindex="0"
+      ></canvas>
+      <div class="edge-shade" aria-hidden="true"></div>
+      <header class="topbar">
+        <a class="brand" href="#air" aria-label="Element Bender home"
+          ><svg viewBox="0 0 44 44" fill="none" aria-hidden="true">
+            <path d="M22 3 40 34H4L22 3Z" />
+            <path d="M9 22h26M14 41h16" />
+            <circle cx="22" cy="25" r="5" /></svg
+          ><span
+            >Element Bender<small>A study in natural forces</small></span
+          ></a
+        >
+        <div class="top-actions">
+          <button
+            id="help-button"
+            class="icon-button"
+            aria-label="How to bend"
+            title="How to bend (?)"
+          >
+            ?</button
+          ><button id="camera-button" class="camera-button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="6" width="13" height="12" rx="3" />
+              <path d="m16 10 5-3v10l-5-3" /></svg
+            ><span>Use your hands</span>
+          </button>
+        </div>
+      </header>
+      <main class="introduction" aria-live="polite">
+        <div class="element-context">
+          <span id="element-mark"></span
+          ><span id="element-location">The upper atmosphere</span>
+        </div>
+        <h1 id="element-title">Air</h1>
+        <p id="element-poem">Give the sky<br />a little of your movement.</p>
+      </main>
+      <div class="world-caption">
+        <span class="live-dot"></span
+        ><span id="world-caption">A living sky. Nothing is prerecorded.</span>
+      </div>
+      <div id="hand-cursors" aria-hidden="true">
+        <div class="hand-cursor"><span></span></div>
+        <div class="hand-cursor"><span></span></div>
+      </div>
+      <aside id="practice" class="practice" hidden>
+        <button id="close-practice" aria-label="Close practice">×</button
+        ><small>A moment of practice</small>
+        <h2 id="practice-title">Gather a cloud</h2>
+        <p id="practice-description">
+          Choose Gather, then hold and move through the cloud.
+        </p>
+        <div class="practice-progress"><i></i></div>
+        <span id="practice-count">1 of 3</span>
+      </aside>
+      <div class="utilities">
+        <button
+          id="practice-button"
+          title="Guided practice"
+          aria-label="Guided practice"
+        >
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="8" />
+            <circle cx="12" cy="12" r="3" />
+          </svg></button
+        ><button
+          id="sound-button"
+          title="Enable ambient sound"
+          aria-label="Enable ambient sound"
+          aria-pressed="false"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M4 9h4l5-4v14l-5-4H4ZM17 8c2 2 2 6 0 8M20 5c4 4 4 10 0 14"
+            />
+          </svg></button
+        ><button
+          id="pause-button"
+          title="Pause (Space)"
+          aria-label="Pause simulation"
+          aria-pressed="false"
+        >
+          <svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" /></svg></button
+        ><button
+          id="reset-button"
+          title="Restore this element (R)"
+          aria-label="Restore this element"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M5 8a8 8 0 1 1-1 7M4 3v6h6" />
+          </svg></button
+        ><span class="utility-divider"></span
+        ><button
+          id="capture-button"
+          title="Save a picture"
+          aria-label="Save a picture"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M8 6 9 3h6l1 3h5v14H3V6Z" />
+            <circle cx="12" cy="12" r="4" />
+          </svg></button
+        ><button
+          id="settings-button"
+          title="Settings"
+          aria-label="Settings"
+          aria-expanded="false"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M5 3v18M12 3v18M19 3v18M2 8h6M9 16h6M16 7h6" />
+          </svg></button
+        ><button
+          id="fullscreen-button"
+          title="Fullscreen (F)"
+          aria-label="Enter fullscreen"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5" />
+          </svg>
+        </button>
+      </div>
+      <section
+        id="settings"
+        class="panel settings"
+        hidden
+        aria-label="Experience settings"
+      >
+        <h2>Make it your own</h2>
+        <label
+          >Force <output id="power-value">1.0×</output
+          ><input
+            id="power"
+            type="range"
+            min="0.3"
+            max="2.5"
+            step="0.1"
+            value="1" /></label
+        ><label
+          >Reach <output id="radius-value">1.8</output
+          ><input
+            id="radius"
+            type="range"
+            min="0.7"
+            max="3.5"
+            step="0.1"
+            value="1.8" /></label
+        ><label
+          >Detail<select id="quality">
+            <option value="auto">Adaptive</option>
+            <option value="high">High</option>
+            <option value="low">Light</option>
+          </select></label
+        >
+        <p id="performance">Measuring the rhythm…</p>
+      </section>
+      <section id="camera-preview" hidden>
+        <canvas
+          id="tracking-preview"
+          width="320"
+          height="240"
+          aria-label="Mirrored camera preview with hand and body tracking"
+        ></canvas
+        ><span id="tracking-status">Show your open palms</span
+        ><button id="stop-camera" aria-label="Stop camera">×</button>
+      </section>
+      <footer class="bottom-ui">
+        <nav class="element-nav" aria-label="Choose an element">
+          <button data-element="air" aria-pressed="true">
+            <svg viewBox="0 0 32 32">
+              <path
+                d="M4 12h17a4 4 0 1 0-4-4M3 17h23a3 3 0 1 1-3 3M7 23h9a3 3 0 1 1-3 3"
+              /></svg
+            ><span>Air</span><kbd>1</kbd>
+          </button>
+          <button data-element="water" aria-pressed="false">
+            <svg viewBox="0 0 32 32">
+              <path
+                d="M16 3C13 9 6 15 6 21a10 10 0 0 0 20 0C26 15 19 9 16 3Z"
+              />
+              <path d="M10 21a6 6 0 0 0 6 6" /></svg
+            ><span>Water</span><kbd>2</kbd>
+          </button>
+          <button data-element="earth" aria-pressed="false">
+            <svg viewBox="0 0 32 32">
+              <path d="m3 26 13-22 13 22H3ZM10 15l6 4 6-4M8 30h16" /></svg
+            ><span>Earth</span><kbd>3</kbd>
+          </button>
+          <button data-element="fire" aria-pressed="false">
+            <svg viewBox="0 0 32 32">
+              <path
+                d="M17 2c3 9-5 11-1 16 3-1 4-4 4-7 5 5 8 9 6 14-3 8-18 7-20-1C4 18 8 12 11 9c-1 7 1 7 2 8C16 13 12 7 17 2Z"
+              /></svg
+            ><span>Fire</span><kbd>4</kbd>
+          </button>
+        </nav>
+        <div class="gesture-bar" role="group" aria-label="Bending action">
+          <button data-action="flow" aria-pressed="true" title="Flow (Q)">
+            Flow</button
+          ><button data-action="gather" aria-pressed="false" title="Gather (G)">
+            Gather</button
+          ><button data-action="push" aria-pressed="false" title="Push (P)">
+            Push</button
+          ><button data-action="swirl" aria-pressed="false" title="Swirl (S)">
+            Swirl</button
+          ><button data-action="lift" aria-pressed="false" title="Lift (L)">
+            Lift</button
+          ><button data-action="calm" aria-pressed="false" title="Settle (C)">
+            Settle
+          </button>
+        </div>
+        <p class="interaction-hint" id="interaction-hint">
+          <span class="mouse-icon" aria-hidden="true"></span>Hold & drag to move
+          the clouds<span class="hint-separator">/</span>Choose a gesture to
+          change the force
+        </p>
+      </footer>
+      <div class="corner-note">
+        <span id="input-mode">Mouse & touch</span
+        ><span id="pause-status"></span>
+      </div>
+      <div id="toast" role="status" aria-live="polite"></div>
+      <dialog id="help-dialog">
+        <button class="dialog-close" id="close-help" aria-label="Close guide">
+          ×</button
+        ><span class="guide-symbol">✧</span>
+        <h2>Your movement.<br />Nature’s response.</h2>
+        <p>
+          Choose an element, then hold and move through the scene. Begin slowly.
+          Let it answer.
+        </p>
+        <div class="guide-columns">
+          <div>
+            <h3>With your hands</h3>
+            <p>
+              Enable your camera and step back until both hands are visible.
+              Sweep an open palm to move. Pinch or close your hand to gather.
+              Bring two hands together to condense; spread them wide to
+              disperse.
+            </p>
+            <p>
+              Circle your hand to swirl. Turn your palm up to lift, down to
+              settle. Your wrists also work when you step farther back. Choose a
+              gesture below for a steady override.
+            </p>
+          </div>
+          <div>
+            <h3>With a mouse or touch</h3>
+            <p>
+              Hold and drag to bend. Select a gesture below for a different
+              force. Right-drag or hold Shift to push. On a touchscreen, use two
+              fingers for two sources of force.
+            </p>
+            <p>
+              On earth, Flow raises land and Push carves valleys. Streams find
+              new paths and forests follow the terrain. Alt-drag to orbit the
+              island; scroll to move closer.
+            </p>
+          </div>
+        </div>
+        <div class="keyboard-guide">
+          <span><kbd>1–4</kbd> Elements</span><span><kbd>Space</kbd> Pause</span
+          ><span><kbd>R</kbd> Restore</span><span><kbd>F</kbd> Fullscreen</span
+          ><span><kbd>H</kbd> Hide controls</span
+          ><span><kbd>Esc</kbd> Close panels</span>
+        </div>
+        <p class="privacy-note">
+          Camera frames stay on your device. No account. No recording. Just you
+          and the elements.
+        </p>
+        <button id="begin-button" class="primary-button">Let’s begin</button>
+      </dialog>
+      <div id="loading">
+        <div class="loading-orbit"></div>
+        <p id="loading-status">Opening the sky…</p>
+      </div>
+      <video id="video" autoplay playsinline muted hidden></video>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
